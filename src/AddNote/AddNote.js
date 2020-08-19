@@ -14,15 +14,19 @@ export default class AddNote extends Component {
       id: '',
       nameValid: false,
       idValid: false,
-      validationMessage: ''
+      validationMessage: null
     };
   }
   static contextType = ApiContext;
   static defaultProps = {
-    folders: []
+    folders: [],
+    history: {
+      goBack: () => { }
+    }
   };
 
-  isNameValid = event => {
+  handleAddNoteForm = (event) => {
+  let isNameValid = () => {
     event.preventDefault();
     if (!this.state.name) {
       this.setState({
@@ -46,6 +50,14 @@ export default class AddNote extends Component {
       );
     }
   };
+
+  let returnBack = () => {this.props.history.goBack()}
+
+  isNameValid(event);
+  if (this.state.validationMessage !== null) {
+  returnBack();
+  } 
+  } // End of handleAddNoteForm
 
   addNote = () => {
     const options = {
@@ -95,7 +107,7 @@ export default class AddNote extends Component {
         <h2>Add a New Note</h2>
         <NotefulForm
           onSubmit={event => {
-            this.isNameValid(event);
+            this.handleAddNoteForm(event);
           }}
         >
           <div className='field'>
@@ -109,11 +121,6 @@ export default class AddNote extends Component {
               }}
             />
           </div>
-          {!this.state.nameValid && (
-            <div>
-              <p>{this.state.validationMessage}</p>
-            </div>
-          )}
           <div className='field'>
             <label htmlFor='note-content-input'>Content</label>
             <textarea

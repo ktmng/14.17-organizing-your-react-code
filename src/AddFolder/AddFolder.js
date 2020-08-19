@@ -12,12 +12,18 @@ export default class AddFolder extends Component {
       name: '',
       id: '',
       nameValid: false,
-      validationMessage: ''
+      validationMessage: null
     };
   }
   static contextType = ApiContext;
+  static defaultProps = {
+    history: {
+      goBack: () => { }
+    }
+  };
 
-  isNameValid = event => {
+  handleAddFolderForm = (event) => {
+  let isNameValid = () => {
     event.preventDefault();
     if (!this.state.name) {
       this.setState({
@@ -34,6 +40,14 @@ export default class AddFolder extends Component {
       );
     }
   };
+
+  let returnBack = () => {this.props.history.goBack()}
+
+  isNameValid(event);
+  if (this.state.validationMessage !== null) {
+    returnBack();
+  } 
+  } //End of handleAddFolderForm
 
   addFolder = () => {
     const randomid =
@@ -81,7 +95,7 @@ export default class AddFolder extends Component {
         <h2>Add a New Folder</h2>
         <NotefulForm
           onSubmit={event => {
-            this.isNameValid(event);
+            this.handleAddFolderForm(event);
           }}
         >
           <div className='add-folder-form'>

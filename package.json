@@ -11,7 +11,9 @@
     "react-dom": "^16.6.3",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
-    "typeface-roboto": "0.0.54"
+    "typeface-roboto": "0.0.54",
+    "serve": "serve -s build",
+    "preserve": "npm run build"
   },
   "scripts": {
     "start": "react-scripts start",
