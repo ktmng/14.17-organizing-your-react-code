@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 import './NotefulForm.css'
 
 export default function NotefulForm(props) {
@@ -10,4 +11,9 @@ export default function NotefulForm(props) {
       {...otherProps}
     />
   )
+}
+
+NotefulForm.propTypes = {
+  className: PropTypes.array,
+  otherProps: PropTypes.element
 }

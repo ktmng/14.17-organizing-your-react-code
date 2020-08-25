@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import NotefulForm from '../NotefulForm/NotefulForm';
 import ApiContext from '../ApiContext';
 import config from "../config"
+import PropTypes from 'prop-types'
 import './AddNote.css';
 
 export default class AddNote extends Component {
@@ -14,6 +15,7 @@ export default class AddNote extends Component {
       id: '',
       nameValid: false,
       idValid: false,
+      contentValid: false,
       validationMessage: null
     };
   }
@@ -37,6 +39,11 @@ export default class AddNote extends Component {
       this.setState({
         validationMessage: 'Please choose an existing folder',
         idValid: false
+      });
+    } else if (!this.state.content) {
+      this.setState({
+        validationMessage: 'Note contents cannot be left blank',
+        contentValid: false
       });
     } else {
       this.setState(
@@ -113,6 +120,7 @@ export default class AddNote extends Component {
           <div className='field'>
             <label htmlFor='note-name-input'>Note Name</label>
             <input
+              required
               type='text'
               id='note-name-input'
               name='note'
@@ -124,6 +132,7 @@ export default class AddNote extends Component {
           <div className='field'>
             <label htmlFor='note-content-input'>Content</label>
             <textarea
+              required
               id='note-content-input'
               name='content'
               onChange={event => {
@@ -160,4 +169,14 @@ export default class AddNote extends Component {
       </section>
     );
   }
+}
+
+AddNote.propTypes = {
+  folder: PropTypes.array,
+  history: PropTypes.object,
+  name: PropTypes.string.isRequired,
+  nameChange: PropTypes.func.isRequired,
+  contentChange: PropTypes.func.isRequired,
+  folderIdChange: PropTypes.func.isRequired,
+  handleAddNoteForm: PropTypes.func.isRequired
 }
