@@ -18,6 +18,12 @@ export default class AddNote extends Component {
       contentValid: false,
       validationMessage: null
     };
+//new: trying to get add note to accurately update onchange's value
+    this.nameChange = this.nameChange.bind(this);
+    this.contentChange = this.contentChange.bind(this);
+    this.folderIdChange = this.folderIdChange.bind(this);
+    this.handleAddNoteForm = this.handleAddNoteForm.bind(this);
+//new
   }
   static contextType = ApiContext;
   static defaultProps = {
@@ -27,24 +33,29 @@ export default class AddNote extends Component {
     }
   };
 
+  handleError = () => {
+    console.log(this.state)
+    if (this.state.validationMessage == null) {
+      this.returnBack();
+    }
+  }
   handleAddNoteForm = (event) => {
-  let isNameValid = () => {
     event.preventDefault();
     if (!this.state.name) {
       this.setState({
         validationMessage: 'Note name is required',
         nameValid: false
-      });
-    } else if (!this.state.id) {
-      this.setState({
-        validationMessage: 'Please choose an existing folder',
-        idValid: false
-      });
+      }, ()=> {this.handleError()})
     } else if (!this.state.content) {
       this.setState({
         validationMessage: 'Note contents cannot be left blank',
         contentValid: false
-      });
+      }, () => {this.handleError()})
+    } else if (!this.state.id || this.state.id === '...') {
+      this.setState({
+        validationMessage: 'Please choose an existing folder',
+        idValid: false
+      }, () => {this.handleError()})
     } else {
       this.setState(
         {
@@ -55,16 +66,10 @@ export default class AddNote extends Component {
           this.addNote();
         }
       );
-    }
-  };
-
-  let returnBack = () => {this.props.history.goBack()}
-
-  isNameValid(event);
-  if (this.state.validationMessage !== null) {
-  returnBack();
-  } 
+    } 
   } // End of handleAddNoteForm
+
+  returnBack = () => {this.props.history.goBack()}
 
   addNote = () => {
     const options = {
@@ -106,9 +111,19 @@ export default class AddNote extends Component {
 
   folderIdChange = input => {
     this.setState({ id: input });
+    console.log(input);
   };
 
   render() {
+//new: error handling
+    if (this.state.error) {
+      return (
+        <h2 className='error-msg'>
+          Caught An Error: {this.state.error}
+        </h2>
+      )
+    }
+//new: error handling
     return (
       <section className='AddNote'>
         <h2>Add a New Note</h2>
@@ -120,7 +135,7 @@ export default class AddNote extends Component {
           <div className='field'>
             <label htmlFor='note-name-input'>Note Name</label>
             <input
-              required
+              // required
               type='text'
               id='note-name-input'
               name='note'
@@ -132,7 +147,7 @@ export default class AddNote extends Component {
           <div className='field'>
             <label htmlFor='note-content-input'>Content</label>
             <textarea
-              required
+              // required
               id='note-content-input'
               name='content'
               onChange={event => {
@@ -156,7 +171,7 @@ export default class AddNote extends Component {
                 </option>
               ))}
             </select>
-            {!this.state.nameValid && (
+            {this.state.validationMessage && (
               <div>
                 <p>{this.state.validationMessage}</p>
               </div>
@@ -173,10 +188,5 @@ export default class AddNote extends Component {
 
 AddNote.propTypes = {
   folder: PropTypes.array,
-  history: PropTypes.object,
-  name: PropTypes.string.isRequired,
-  nameChange: PropTypes.func.isRequired,
-  contentChange: PropTypes.func.isRequired,
-  folderIdChange: PropTypes.func.isRequired,
-  handleAddNoteForm: PropTypes.func.isRequired
+  history: PropTypes.object
 }

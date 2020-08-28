@@ -22,32 +22,28 @@ export default class AddFolder extends Component {
       goBack: () => { }
     }
   };
-
+  returnBack = () => {this.props.history.goBack()}
+  handleError = () => {
+    if (this.state.validationMessage !== null && this.state.name.length !== 0) {
+      this.returnBack();
+    }
+  }
   handleAddFolderForm = (event) => {
-  let isNameValid = () => {
     event.preventDefault();
     if (!this.state.name) {
       this.setState({
         validationMessage: 'Folder name is required',
         nameValid: false
-      });
+      },()=>{this.handleError()});
     } else {
       this.setState(
         {
           validationMessage: '',
           nameValid: true
         },
-        this.addFolder()
-      );
+        ()=>this.addFolder()
+      )
     }
-  };
-
-  let returnBack = () => {this.props.history.goBack()}
-
-  isNameValid(event);
-  if (this.state.validationMessage !== null) {
-    returnBack();
-  } 
   } //End of handleAddFolderForm
 
   addFolder = () => {
@@ -91,6 +87,15 @@ export default class AddFolder extends Component {
   };
 
   render() {
+//new: error handling
+    if (this.state.error) {
+      return (
+        <h2 className='error-msg'>
+          Caught An Error: {this.state.error}
+        </h2>
+      )
+    }
+//new: error handling
     return (
       <section className='AddFolder'>
         <h2>Add a New Folder</h2>
@@ -123,7 +128,5 @@ export default class AddFolder extends Component {
 }
 
 AddFolder.propTypes = {
-  history: PropTypes.object,
-  nameChange: PropTypes.func.isRequired,
-  handleAddFolderForm: PropTypes.func.isRequired
+  history: PropTypes.object
 }

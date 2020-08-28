@@ -1,4 +1,4 @@
-.AddFolder {
+.AddFolder, .error-msg {
     margin-left: 15px;
     color: white;
 }
